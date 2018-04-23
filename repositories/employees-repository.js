@@ -95,7 +95,7 @@ class EmployeesRepository {
 
     /**
      * Get Employee By spesific id
-     * @param {*} id ID of record to retrieve
+     * @param {String} id ID of record to retrieve
      */
     get(id) {
         return new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ class EmployeesRepository {
 
     /**
      * Update Employee record by ID
-     * @param {*} id - the ID of target record to update
+     * @param {String} id - the ID of target record to update
      * @param {*} changedData - changed record
      */
     update(id, changedData) {
@@ -170,6 +170,10 @@ class EmployeesRepository {
         });
     }
 
+    /**
+     * Delete record by ID
+     * @param {String} empId - the ID of target record to delete
+     */
     delete(empId) {
         return new Promise((resolve, reject) => {
             // Connect to MongoDb using mongoose
@@ -190,7 +194,7 @@ class EmployeesRepository {
 
                 if ( err ) {
                     console.log(`[ERROR] - <EmployeesRepository.delete> Details: \n`, err);
-                    reject({
+                    return reject({
                         error: err,
                         message: 'Unable to remove a record from database.',
                     });
