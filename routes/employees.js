@@ -65,15 +65,26 @@ router.put("/:empId", async(req, res, next) => {
 });
 
 /**
-
- * A helper to handle update data on database.
-
- * @param {*} res - Express Response object
-
- * @param {*} req - Express Request object
-
+ * Delete an existing Employee data record on the database
+ * by specific ID
+ * Path endpoint: /api/employees/{empId}
  */
+router.delete('/:empId', async(req, res, next) => {
+    const empId = req.params.empId;
+    const repository = new EmployeesRepository(MONGODB_URL);
+    try {
+        const response = await repository.delete(empId);
+        res.status(200).json(response);
+    } catch ( err ) {
+        return res.status(err.status).send(err);
+    }
+});
 
+/**
+ * A helper to handle update data on database.
+ * @param {*} res - Express Response object
+ * @param {*} req - Express Request object
+ */
 async function doUpdate(res, req) {
 
     const empId = req.params.empId;
