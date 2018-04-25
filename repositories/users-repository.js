@@ -4,6 +4,7 @@ const express = require('express');
 var jwt = require('jsonwebtoken'); 
 var app = express();
 var bcrypt = require('bcrypt');
+app.set('secret', 'iwebdevcarrot'); 
 
 const User = require('../models/users-model');
 
