@@ -7,6 +7,11 @@ app.set('secret', 'iwebdevcarrot');
 
 const MONGODB_URL = 'mongodb+srv://dila:Helloworld123@cluster0-82r3u.mongodb.net/bit-carrot';
 
+/**
+ * Create a new User on the database
+ * HTTP Verb: POST
+ * Path Endpoint: /users/
+ */
 router.post('/', async (req, res, next) => {
     const repository = new UsersRepository(MONGODB_URL);
     try {
@@ -17,6 +22,11 @@ router.post('/', async (req, res, next) => {
     } 
 });
 
+/**
+ * Get all users on the database
+ * HTTP Verb: GET
+ * Path Endpoint: /users/
+ */
 router.get('/', async(req, res, next) => {
     const repository = new UsersRepository(MONGODB_URL);
     try {
@@ -27,6 +37,11 @@ router.get('/', async(req, res, next) => {
     }
 });
 
+/**
+ * Get token for current user
+ * HTTP Verb: POST
+ * Path Endpoint: /users/authenticate
+ */
 router.post('/authenticate', async (req, res, next) => {
     const repository = new UsersRepository(MONGODB_URL);
     try {
