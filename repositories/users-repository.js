@@ -131,7 +131,7 @@ class UsersRepository {
                     reject({ 
                         success: false, 
                         message: 'Authentication failed. User not found.',
-                        status: 404
+                        status: 401
                     });
                 } else {
                     bcrypt.compare(request.password, user.password, function (err, result) {
@@ -153,7 +153,7 @@ class UsersRepository {
                             reject({ 
                                success: false, 
                                message: 'Authentication failed. Wrong password.',
-                               status: 403
+                               status: 401
                             });
                         }
                     });
