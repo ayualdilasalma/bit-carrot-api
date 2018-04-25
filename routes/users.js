@@ -34,7 +34,7 @@ router.post('/', async (req, res, next) => {
         // Validate the model instance and handle the validation error's response
         const errValidation = newEmployee.validateSync();
         if ( errValidation ) {
-            console.log(`[ERROR] - <EmployeesRepository>.createEmployee details: \n`, errValidation);
+            console.log(`[ERROR] - <UsersRepository>.createEmployee details: \n`, errValidation);
             return reject({
                 error: errValidation,
                 message: 'Unable to create a new Employee',
@@ -47,7 +47,7 @@ router.post('/', async (req, res, next) => {
         const db = mongoose.connection;
 
         db.on(`error`, (err) => {
-            console.log(`[ERROR] - <EmployeesRepository.createEmployee> details" \n`, err);
+            console.log(`[ERROR] - <UsersRepository.createEmployee> details" \n`, err);
             return reject({
                 error: err,
                 message: 'Unable to connect to database',
@@ -62,7 +62,7 @@ router.post('/', async (req, res, next) => {
 
             // Handle error's response
             if ( err ) {
-                console.log(`[ERROR] - <EmployeesRepository.createEmployee> details: \n`, err);
+                console.log(`[ERROR] - <UsersRepository.createEmployee> details: \n`, err);
                 return reject({
                     error: err,
                     message: 'Unable to create a new Employee',
@@ -70,8 +70,8 @@ router.post('/', async (req, res, next) => {
                 });
             } 
 
-            console.log(`[INFO] - <EmployeesRepository.createEmployee> Returning created record`);
-            resolve( createdEmp );
+            console.log(`[INFO] - <UsersRepository.createEmployee> Returning created record`);
+            res.status(200).json(createdEmp);
         });
     });
 });
@@ -83,7 +83,7 @@ router.get('/get', async(req, res, next) => {
         const db = mongoose.connection;
 
         db.on(`error`, (err) => {
-            console.log(`[ERROR] - <EmployeesRepository.getAll> details: \n`, err);
+            console.log(`[ERROR] - <UsersRepository.getAll> details: \n`, err);
             reject({
                 error: err,
                 message: 'Unable to connect to database',
@@ -95,11 +95,11 @@ router.get('/get', async(req, res, next) => {
             mongoose.disconnect();
 
             if ( err ) {
-                console.log(`[ERROR] - <EmployeesRepository.getAll> details: \n`, err);
+                console.log(`[ERROR] - <UsersRepository.getAll> details: \n`, err);
             }
 
-            console.log(`[SUCCESS] - <EmployeesRepository.getAll> details: \n`, employees)
-            return resolve(employees);
+            console.log(`[SUCCESS] - <UsersRepository.getAll> details: \n`, employees)
+            res.status(200).json(employees);
         });
     });
   });
@@ -109,7 +109,7 @@ router.get('/get', async(req, res, next) => {
         const db = mongoose.connection;
 
         db.on(`error`, (err) => {
-            console.log(`[ERROR] - <EmployeesRepository.getAll> details: \n`, err);
+            console.log(`[ERROR] - <UsersRepository.getAll> details: \n`, err);
             reject({
                 error: err,
                 message: 'Unable to connect to database',
@@ -118,32 +118,32 @@ router.get('/get', async(req, res, next) => {
         });
 
         // find the user
-        User.findOne({ email: req.body.email })
-            .exec(function (err, user) {
+        User.findOne({ email: `${req.body.email}` }, (err, user) => {
             if (err) {
                 throw err;
             } else if (!user) {
                 res.json({ success: false, message: 'Authentication failed. User not found.' });
+            } else {
+                bcrypt.compare(req.body.password, user.password, function (err, result) {
+                    if (result === true) {
+                        const payload = {
+                            username: user.username 
+                        };
+                        var token = jwt.sign(payload, app.get('secret'), {
+                            expiresIn: 60 * 60 // expires in 24 hours
+                        });
+                
+                        // return the information including token as JSON
+                        res.json({
+                            success: true,
+                            message: 'Enjoy your token!',
+                            token: token
+                        });
+                    } else {
+                        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+                    }
+                });
             }
-            bcrypt.compare(req.body.password, user.password, function (err, result) {
-                if (result === true) {
-                    const payload = {
-                        username: user.username 
-                    };
-                    var token = jwt.sign(payload, app.get('secret'), {
-                        expiresIn: 60 * 60 // expires in 24 hours
-                    });
-            
-                    // return the information including token as JSON
-                    res.json({
-                        success: true,
-                        message: 'Enjoy your token!',
-                        token: token
-                    });
-                } else {
-                    res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-                }
-            })
         });
   });
 
