@@ -116,7 +116,7 @@ class EmployeesRepository {
 
                 if ( err ) {
                     console.log(`[ERROR] - <EmployeesRepository.get> details: \n`, err);
-                    return reject({
+                    reject({
                         error: err,
                         message: 'Unable to get an employee by id',
                     });

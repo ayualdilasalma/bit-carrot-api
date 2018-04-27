@@ -65,6 +65,20 @@ router.put("/:empId", async(req, res, next) => {
 });
 
 /**
+ * Update an employee on database
+ * HTTP Verb: PATCH
+ * Path endpoint: /api/employees/{empId}
+ */
+router.patch("/:empId", async(req, res, next) => {
+    try {
+        const changedEmp = await doUpdate(res, req);
+        res.status(200).json(changedEmp);
+    } catch (err) {
+        res.status(err.status).send(err);
+    }
+});
+
+/**
  * Delete an existing Employee data record on the database
  * by specific ID
  * Path endpoint: /api/employees/{empId}
